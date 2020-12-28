@@ -1,0 +1,78 @@
+.data
+string0:.asciiz "\n"
+string1:.asciiz "************************************************"
+string2:.asciiz "Start testing global:"
+.text
+li $t0,12345679
+li $t1,0
+li $t2,-0
+li $t3,-12345679
+li $t4,57
+li $t5,95
+li $t6,43
+li $s0,42
+addi $s1,$gp,32
+jal main
+
+li $v0,10
+syscall
+initGlobalArray:
+li $t7,0
+li $t8,0
+sll $t8,$t8,2
+addu $t8,$t8,$s1
+sw $t7,0($t8)
+jr $ra
+jr $ra
+
+printGlobalArray:
+li $t8,0
+sll $t8,$t8,2
+addu $t8,$t8,$s1
+lw $s2,0($t8)
+addu $a0,$s2,$zero
+li $v0,1
+syscall
+la $a0,string0
+li $v0,4
+syscall
+jr $ra
+jr $ra
+
+testGlobal:
+sw $ra,0($sp)
+addu $t9,$sp,$zero
+addi $sp,$sp,-4
+jal initGlobalArray
+addi $sp,$sp,4
+addu $t9,$sp,$zero
+addi $sp,$sp,-4
+jal printGlobalArray
+addi $sp,$sp,4
+lw $ra,0($sp)
+jr $ra
+lw $ra,0($sp)
+jr $ra
+
+main:
+sw $ra,0($sp)
+la $a0,string1
+li $v0,4
+syscall
+la $a0,string0
+li $v0,4
+syscall
+la $a0,string2
+li $v0,4
+syscall
+la $a0,string0
+li $v0,4
+syscall
+addu $t9,$sp,$zero
+addi $sp,$sp,-4
+jal testGlobal
+addi $sp,$sp,4
+lw $ra,0($sp)
+jr $ra
+li $v0,10
+syscall
